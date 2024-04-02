@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/a.css" />
+  </head>
+  <body>
+    <div>
+      {% if name %}
+      <h1>Welcom {{ name }}</h1>
+      {% else %}
+      <h1>Need Login</h1>
+      {% endif %}
+    </div>
+    <p>{{ request.url }}</p>
+  </body>
+</html>
