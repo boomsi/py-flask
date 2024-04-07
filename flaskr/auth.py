@@ -9,7 +9,7 @@ from flaskr.db import get_db
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/registry', methods=('GET', 'POST'))
-def get_auth():
+def registry():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -32,6 +32,8 @@ def get_auth():
                 error = f"User {username} is already registered."
             else:
                 return redirect(url_for('auth.login'))
+
+        flash(error)
     return render_template('auth/registry.html')
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -48,12 +50,12 @@ def login():
 
         if user is None:
             error = 'Incorrent username'
-        elif not check_password_hash(password, user['password']):
+        elif not check_password_hash(user['password'], password):
             error = 'Incorrent password'
-        
+
         if error is None:
-            sessid.clear()
-            sessid['user_id'] = user['id']
+            session.clear()
+            session['user_id'] = user['id']
             return redirect(url_for('index'))
         flash(error)
     return render_template('auth/login.html')

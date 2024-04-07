@@ -1,8 +1,9 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    app.secret_key = 'dev'
     app.config.from_mapping(
         SECERT_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite')
@@ -18,14 +19,18 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/hello')
-    def hello():
-        return 'hello'
+    @app.route('/index')
+    def index():
+        return render_template('index.html')
 
     from . import db
     db.init_app(app)
 
     from . import auth
     app.register_blueprint(auth.bp)
+    from . import blog
+    app.register_blueprint(blog.bp)
+    app.add_url_rule('/', endpoint='index')
 
     return app
+    
