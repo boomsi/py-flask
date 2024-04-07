@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -18,10 +18,6 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    @app.route('/index')
-    def index():
-        return render_template('index.html')
 
     from . import db
     db.init_app(app)
