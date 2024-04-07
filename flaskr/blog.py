@@ -47,6 +47,32 @@ def create():
         flash(error)
     return render_template('blog/create.html')
 
-@bp.route('/update', methods=('GET', 'POST'))
-def update():
-    pass
+@bp.route('/update/<id>', methods=('GET', 'POST'))
+def update(id):
+    db = get_db()
+    post = db.execute(
+            'SELECT * FROM post WHERE id = ?',
+            (id,)
+        ).fetchone()
+    if request.method == 'POST':
+        title = request.form['title']
+        body = request.form['body']
+        error = None
+        if not post:
+            abort(403)
+        if not title:
+            error = 'Title is required.'
+        if not body:
+            error = 'Body is required.'
+        
+        if not error:
+            db.execute(
+                'UPDATE post SET title = ?, body = ? WHERE id = ?',
+                (title, body, id)
+            )
+            db.commit()
+            return redirect(url_for('blog.index'))
+        
+        flash(error)
+
+    return render_template('blog/update.html', post=post)
