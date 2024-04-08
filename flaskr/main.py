@@ -1,8 +1,14 @@
 from flask import jsonify
 from flaskr import create_app
-from utils.error import InvalidAPIUsage
+from flaskr.utils.error import InvalidAPIUsage
+from flaskr.routes import auth, blog
 
 app = create_app()
+
+app.register_blueprint(auth.bp)
+app.register_blueprint(blog.bp)
+app.add_url_rule('/', endpoint='index')
+
 
 @app.errorhandler(InvalidAPIUsage)
 def invalid_api_usage(e):
